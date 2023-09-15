@@ -1,6 +1,7 @@
 <?php
     // INICIO OBTENEMOS EL CUIT DEL FORMULARIO
     $cuit = $_GET['cuit'];
+    $cuit = str_replace("-","",filter_var($cuit, FILTER_SANITIZE_NUMBER_INT));
 
     //CREAMOS LA CONEXION CON LA BASE DE DATOS
     require './include/config/conexion.php';
@@ -47,7 +48,8 @@
         <?php include './include/templates/header.php'; ?>
         <!-- FIN HEADER -->
         <!-- DATOS DE LA EMPRESA -->
-            <h3>CUIT: <?php echo $cuit ?></h3>
+            <?php include './include/templates/razonSocial.php' ?>
+            <h3>CUIT: <?php echo $cuitGuion ?></h3>
             <span id="spanAlicuotaNoExiste"></span>
             <h3>Alicuota: <span id="alicuotaHTML"></span></h3>
         <!-- FIN DATOS DE LA EMPRESA -->
@@ -73,6 +75,9 @@
         <div class="py-4"><!-- RESULTADOS -->
             <p class="lead fs-3">La retención es de: <strong><span id="reten"></span></strong></p>
             <p class="lead fs-3">El importe a pagar es de: <strong><span id="aPagar"></span></strong></p>
+        </div>
+        <div><!-- BOTON CALCULAR RETENCION -->
+            <a href="./index.php"><button class="w-100 btn btn-primary btn-lg">Nuevo Cuit</button></a>
         </div>
         <!-- INICIO FOOTER -->
         <?php include './include/templates/footer.php' ?>

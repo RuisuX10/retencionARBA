@@ -6,7 +6,7 @@
     function alicuotaNoExiste(){
         alicuota = 3;
         const spanAlicuotaNoExiste =document.getElementById("spanAlicuotaNoExiste");
-        spanAlicuotaNoExiste.innerHTML = "El cuit ingresado no figura en la base de datos, se procede con la alicuota gral.";
+        spanAlicuotaNoExiste.innerHTML = "El cuit ingresado no figura en la base de datos de ARBA, se procede con la alicuota gral.";
     };
     //FUNCION SI LA ALICUOTA EXISTE
     function alicuotaExiste(){
