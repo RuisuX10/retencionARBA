@@ -1,37 +1,32 @@
 <?php
+    // INICIO OBTENEMOS EL CUIT DEL FORMULARIO
+    $cuit = $_GET['cuit'];
 
-var_dump($_GET);
-$cuit = $_GET['cuit'];
-var_dump($cuit);
+    //CREAMOS LA CONEXION CON LA BASE DE DATOS
+    require './include/config/conexion.php';
 
-$conexion = mysqli_connect("localhost", "root","","arba"); 
+    //INFORME EN LA CONSOLA DE LA CONEXION
+    if(mysqli_connect_errno()){
+        echo "<script>console.log('error de conexion')</script>";
+    } else{
+        echo "<script>console.log('conexion exitosa')</script>";
+    }
 
-if(mysqli_connect_errno()){
-    echo "error de conexion";
-} else{
-    echo "Conexion exitosa";
-}
+    $consulta = mysqli_query($conexion,"SELECT * FROM alicuotas WHERE cuit = $cuit
+    ");
 
-$consulta = mysqli_query($conexion,"SELECT * FROM alicuotas WHERE cuit = $cuit
-");
+    $listado = mysqli_fetch_assoc($consulta);
 
-echo "<pre>";
-var_dump($consulta);
-echo "</pre>";
+    //obtenemos el valor de la alicuota en formato float, reemplazando la , por . del valor obtenido
+    $alicuota = floatval(str_replace(",",".",$listado['alicuota']));
 
-$listado = mysqli_fetch_assoc($consulta);
-
-//obtenemos el valor de la alicuota en formato float, reemplazando la , por . del valor obtenido
-$alicuota = floatval(str_replace(",",".",$listado['alicuota']));
-
-echo "<pre>";
-var_dump($listado['alicuota']);
-var_dump($alicuota);
-echo $alicuota;
-echo "</pre>";
-
-
+    $tipoAlicuota = get_debug_type($listado['alicuota']);
+    var_dump($alicuota);
 ?>
+
+
+
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -48,15 +43,15 @@ echo "</pre>";
   </head>
   <body class="darkmode">
     <div class="container border px-5 ppal">
-        <div class="text-center mt-4 py-3">
-            <div>
-                <button type="button" class="btn btn-outline-warning" id="bdark">Dark/Light mode</button><br><br>
-            </div>
-            <h1>Calculadora de retención - ARBA</h1>
-        </div>
+        <!-- INICIO HEADER -->
+        <?php include './include/templates/header.php'; ?>
+        <!-- FIN HEADER -->
+        <!-- DATOS DE LA EMPRESA -->
             <h3>CUIT: <?php echo $cuit ?></h3>
-            <h3>Alicuota: <?php echo $alicuota ?></h3>
-
+            <span id="spanAlicuotaNoExiste"></span>
+            <h3>Alicuota: <span id="alicuotaHTML"></span></h3>
+        <!-- FIN DATOS DE LA EMPRESA -->
+        <br>
         <div><!-- NETO DEL COMPROBANTE -->
             <h3>Neto del Comprobante</h3>
             <input type="number" class="form-control" id="neto">
@@ -65,24 +60,26 @@ echo "</pre>";
             <h3>Total del comprobante</h3>
             <input type="number" class="form-control" id="total">
         </div>
+        <!-- OTRAS DEDUCCIONES -->
+        <div class="py-1">
+            <h3>Otras deducciones</h3>
+            <input type="number" class="form-control" id="deducciones" value="0">
+        </div>
+        <!-- FIN OTRAS DEDUCCIONES -->
+        <br>
         <div><!-- BOTON CALCULAR RETENCION -->
             <button class="w-100 btn btn-primary btn-lg" id="boton">Calcular Retencion</button>
         </div>
         <div class="py-4"><!-- RESULTADOS -->
-            <p class="lead fs-3">Alicuota: <strong><span id="reten"></span></strong></p>
             <p class="lead fs-3">La retención es de: <strong><span id="reten"></span></strong></p>
             <p class="lead fs-3">El importe a pagar es de: <strong><span id="aPagar"></span></strong></p>
         </div>
-        <footer>
-            Creado por Rolando Luis Escobar, desarrollador web.<br>
-            Puedes visitar mi <a href="https://ruisudev.com" target="_blank">Sitio web</a>
-
-        </footer>
-        
+        <!-- INICIO FOOTER -->
+        <?php include './include/templates/footer.php' ?>
+        <!-- FIN FOOTER -->
         <br>
         <br>
     </div>
-    <script src="index.js" type="module"></script>  
     <script  src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
     <script>
         const bdark = document.querySelector('#bdark');
@@ -91,5 +88,7 @@ echo "</pre>";
             body.classList.toggle('darkmode');
         })    
     </script>
+    <!-- MODULO DEL SCRIP PARA LOS CALCULOS -->
+    <?php include './include/config/script.php'; ?>
     </body>
 </html>
