@@ -2,7 +2,7 @@
     // INICIO OBTENEMOS EL CUIT DEL FORMULARIO
     $cuit = $_GET['cuit'];
     $cuit = str_replace("-","",filter_var($cuit, FILTER_SANITIZE_NUMBER_INT));
-
+    $cuitGuion = substr_replace(substr_replace($cuit, "-", 2, 0), "-", 11, 0);
     //CREAMOS LA CONEXION CON LA BASE DE DATOS
     require './include/config/conexion.php';
 
